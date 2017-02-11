@@ -1,56 +1,96 @@
-process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+/*--By Diego Rodriguez 2/10/17
+    Title: MessageAlert
+    Changed to deploy   
 
+*/
+
+
+
+/**
+ * Module dependencies.
+ */
 var express = require('./config/express');
 var app = express();
+var debug = require('debug')('New folder (3):server');
+var http = require('http');
 
-/*
-app.use('/about', function(reg, res){
-    res.send('Hello about World!!!');
-});
+/**
+ * Get port from environment and store in Express.
+ */
 
-app.use('/', function(reg, res){
-    res.send('Hello World!!!');
-});
-*/
+var port = normalizePort(process.env.PORT || '3000');
+app.set('port', port);
 
-/*
-app.get('/', function(req, res){
-    res.send('This is a GET request');
-});
+/**
+ * Create HTTP server.
+ */
 
-app.post('/', function(req, res){
-    res.send('this is a POST request');
-});
-*/
+var server = http.createServer(app);
 
-/*
-//same result as above
-app.route('/').get(function(req, res){
-    res.send('This is a GET request');
-}).post(function(req, res){
-    res.send('this is a POST request');
-});
-*/
+/**
+ * Listen on provided port, on all network interfaces.
+ */
 
-/*
-var hasName = function(req, res, next){
-    if(req.param('name')){
-        next();
-    }else{
-        res.send('What is your name?');
-    }
-};
-
-var sayHello = function(req, res, next){
-    res.send('Hello '+ req.param('name'));
-};
-
-var app = express();
-app.get('/', hasName, sayHello);     
-*/
-
-
-
-    
-app.listen(3000);
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
 console.log('Server running at http://localhost:3000/');
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+function normalizePort(val) {
+    var port = parseInt(val, 10);
+
+    if (isNaN(port)) {
+        // named pipe
+        return val;
+    }
+
+    if (port >= 0) {
+        // port number
+        return port;
+    }
+
+    return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+    if (error.syscall !== 'listen') {
+        throw error;
+    }
+
+    var bind = typeof port === 'string' ?
+        'Pipe ' + port :
+        'Port ' + port;
+
+    // handle specific listen errors with friendly messages
+    switch (error.code) {
+        case 'EACCES':
+            console.error(bind + ' requires elevated privileges');
+            process.exit(1);
+            break;
+        case 'EADDRINUSE':
+            console.error(bind + ' is already in use');
+            process.exit(1);
+            break;
+        default:
+            throw error;
+    }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+    var addr = server.address();
+    var bind = typeof addr === 'string' ?
+        'pipe ' + addr :
+        'port ' + addr.port;
+    debug('Listening on ' + bind);
+}
